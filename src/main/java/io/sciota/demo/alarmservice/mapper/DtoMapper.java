@@ -3,10 +3,10 @@ package io.sciota.demo.alarmservice.mapper;
 import java.time.Instant;
 import java.util.Date;
 
-import io.sciota.demo.alarmservice.api.AlarmDto;
-import io.sciota.demo.alarmservice.api.RoomDto;
-import io.sciota.demo.alarmservice.api.ScheduleDto;
+import io.sciota.demo.alarmservice.dtos.AlarmDto;
 import io.sciota.demo.alarmservice.dtos.EventDto;
+import io.sciota.demo.alarmservice.dtos.RoomDto;
+import io.sciota.demo.alarmservice.dtos.ScheduleDto;
 import io.sciota.demo.alarmservice.persistence.Alarm;
 import io.sciota.demo.alarmservice.persistence.Room;
 import io.sciota.demo.alarmservice.persistence.Schedule;
@@ -14,46 +14,45 @@ import io.sciota.demo.alarmservice.persistence.Schedule;
 public class DtoMapper {
     public static ScheduleDto from(Schedule dbSched) {
         ScheduleDto sched = new ScheduleDto();
-        sched.scheduleId = dbSched.getId();
-        sched.roomId = dbSched.getRoom().getId();
-        sched.begin = dbSched.getBeginMinsOfDay();
-        sched.end = dbSched.getEndMinsOfDay();
-        sched.days_of_week_mask = dbSched.getActiveDaysOfWeekMask();
+        sched.setRoomId(dbSched.getRoom().getId());
+        sched.setBegin(dbSched.getBeginMinsOfDay());
+        sched.setEnd(dbSched.getEndMinsOfDay());
+        sched.setDaysOfWeekMask(dbSched.getActiveDaysOfWeekMask());
         return sched;
     }
 
     public static Schedule from(ScheduleDto dto, Room dbRoom) {
         Schedule sched = new Schedule();
         sched.setRoom(dbRoom);
-        sched.setBeginMinsOfDay(dto.begin);
-        sched.setEndMinsOfDay(dto.end);
-        sched.setActiveDaysOfWeekMask(dto.days_of_week_mask);
+        sched.setBeginMinsOfDay(dto.getBegin());
+        sched.setEndMinsOfDay(dto.getEnd());
+        sched.setActiveDaysOfWeekMask(dto.getDaysOfWeekMask());
         return sched;
     }
 
     public static AlarmDto from(Alarm dbAlarm) {
         var alarm = new AlarmDto();
-        alarm.alarmId = dbAlarm.getId();
-        alarm.roomId = dbAlarm.getRoom().getId();
-        alarm.reason = dbAlarm.getReason();
-        alarm.timestamp = dbAlarm.getTimestamp();
-        alarm.acknowledged = dbAlarm.isAcknowledged();
+        alarm.setAlarmId(dbAlarm.getId());
+        alarm.setRoomId(dbAlarm.getRoom().getId());
+        alarm.setReason(dbAlarm.getReason());
+        alarm.setTimestamp(DateUtils.asOffsetDateTime(dbAlarm.getTimestamp()));
+        alarm.setAcknowledged(dbAlarm.isAcknowledged());
         return alarm;
     }
 
     public static Alarm from(AlarmDto dto, Room room) {
         var alarm = new Alarm();
         alarm.setRoom(room);
-        alarm.setReason(dto.reason);
-        alarm.setTimestamp(dto.timestamp);
-        alarm.setAcknowledged(dto.acknowledged == null ? false : dto.acknowledged);
+        alarm.setReason(dto.getReason());
+        alarm.setTimestamp(DateUtils.asDate(dto.getTimestamp()));
+        alarm.setAcknowledged(dto.getAcknowledged() == null ? false : dto.getAcknowledged());
         return alarm;
     }
 
     public static RoomDto from(Room dbRoom) {
         var room = new RoomDto();
-        room.id = dbRoom.getId();
-        room.name = dbRoom.getName();
+        room.setRoomId(dbRoom.getId());
+        room.setName(dbRoom.getName());
         return room;
     }
 

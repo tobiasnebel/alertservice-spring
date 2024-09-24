@@ -10,6 +10,9 @@ import java.util.Date;
 
 public class DateUtils {
 
+  public static OffsetDateTime asOffsetDateTime(Date date) {
+    return OffsetDateTime.ofInstant(date.toInstant(), null);
+  }
   public static Date asDate(OffsetDateTime localDate) {
     return Date.from(localDate.toInstant());
   }

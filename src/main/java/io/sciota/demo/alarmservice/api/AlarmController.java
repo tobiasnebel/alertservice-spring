@@ -18,7 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import io.sciota.demo.alarmservice.dtos.AlarmDto;
 import io.sciota.demo.alarmservice.dtos.EventDto;
+import io.sciota.demo.alarmservice.dtos.RoomDto;
+import io.sciota.demo.alarmservice.dtos.ScheduleDto;
 import io.sciota.demo.alarmservice.mapper.DateUtils;
 import io.sciota.demo.alarmservice.mapper.DtoMapper;
 import io.sciota.demo.alarmservice.mapper.DtoValidation;
@@ -77,11 +80,11 @@ public class AlarmController {
 
 	@PostMapping("/schedule")
 	public ResponseEntity<String> postSchedule(@RequestBody ScheduleDto dto) {
-		var room = roomRepository.findById(dto.roomId);
+		var room = roomRepository.findById(dto.getRoomId());
 		if (!room.isPresent()) {
 			return ResponseEntity
 					.status(HttpStatus.NOT_FOUND)
-					.body(String.format("room with id '%d' does not exist.", dto.roomId));
+					.body(String.format("room with id '%d' does not exist.", dto.getRoomId()));
 		}
 
 		// validate
